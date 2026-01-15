@@ -1,2 +1,3 @@
 # sys-admin
-System Administration scripts
+
+System Administration and DevOps projects and scripts

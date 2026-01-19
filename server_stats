@@ -2,6 +2,7 @@
 
 #This is a script analyzing basic server performance stats
 
+# +++++++++++++++++++++++++++++++++++ Total CPU usage +++++++++++++++++++++++++++++++++++
 #Function to check package manager & install sysstat
 check_pkg_manager_install_sysstat() {
     #Debian
@@ -33,3 +34,15 @@ fi
 #Displaying total CPU usage
 echo -e "\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++\n"
 mpstat
+
+# Method 2: Read and extract CPU usage info from "/proc/stat" file
+
+# +++++++++++++++++++++++++++++++++++ Total memory usage (Free vs Used including percentage) +++++++++++++++++++++++++++++++++++
+echo -e "\n +++++++++++++++++++++++++++++++++++ Total Memory Usage +++++++++++++++++++++++++++++++++++\n"
+# All memory stats of the linux system is stored in this file => /proc/meminfo
+# Extracting the needed memory usage data as needed from file
+freeMemory=$(grep MemFree /proc/meminfo)
+totalMemory=$(grep MemTotal /proc/meminfo)
+# usedMemory=($totalMemory-$freeMemory)
+echo $freeMemory
+echo $totalMemory

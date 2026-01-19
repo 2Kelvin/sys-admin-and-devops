@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Sorting only servers that are online and have more than 100 users
+# && is the AND operator
+awk 'BEGIN { print "\nSorting only servers that are online and have more than 100 users\n" } $2 == "online" && $4 > 100' servers.txt 

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo -e "Checking servers\n"
+
+# Columns: $1: serverID, $2: Status, $3: Uptime and $4: Users
+# /online/ is the keyword we are searching for in awk
+# \t is just adding a tab space between the 2 output columns
+awk '$2 == "online" { print $1 "\t" $4  }' servers.txt
+
+
+#simplified code using begin
+#awk 'BEGIN { print "Checking servers\n" } $2 == "online" { print $1, $4 }' servers.txt

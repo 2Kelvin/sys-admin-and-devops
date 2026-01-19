@@ -1,0 +1,6 @@
+ServerID   Status   Uptime(days)  Users
+SRV-01     online   45            120
+SRV-02     offline  0             0
+SRV-03     online   12            450
+SRV-04     online   120           30
+SRV-05     error    2             5

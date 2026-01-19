@@ -1,0 +1,69 @@
+#!/bin/bash
+
+#This is a script analyzing basic server performance stats
+
+#Check for package managers for different distros
+#Debian
+if command -v apt > /dev/null; then
+    if which mpstat > /dev/null; then
+        #Displaying total CPU usage
+        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
+        mpstat
+    else
+        sudo apt install sysstat -y
+        #Displaying total CPU usage
+        echo $'\n+++++ Total CPU Usage +++++'
+        mpstat
+    fi
+#RHEL
+elif command -v dnf > /dev/null; then
+    if which mpstat > /dev/null; then
+        #Displaying total CPU usage
+        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
+        mpstat
+    else
+        sudo dnf install sysstat -y
+        #Displaying total CPU usage
+        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
+        mpstat
+    fi
+#Arch
+elif command -v pacman > /dev/null; then
+    if which mpstat > /dev/null; then
+        #Displaying total CPU usage
+        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
+        mpstat
+    else
+        sudo pacman install sysstat -y
+        #Displaying total CPU usage
+        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
+        mpstat
+    fi
+#OpenSuse
+elif command -v zypper > /dev/null; then
+    if which mpstat > /dev/null; then
+        #Displaying total CPU usage
+        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
+        mpstat
+    else
+        sudo zypper install sysstat -y
+        #Displaying total CPU usage
+        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
+        mpstat
+    fi
+#Older RHEL
+elif command -v yum > /dev/null; then
+    if which mpstat > /dev/null; then
+        #Displaying total CPU usage
+        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
+        mpstat
+    else
+        sudo dnf install sysstat -y
+        #Displaying total CPU usage
+        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
+        mpstat
+    fi
+else
+    echo 'Error finding a supported package manager (apt, dnf, pacman, yum or zypper)'
+    exit 1
+fi

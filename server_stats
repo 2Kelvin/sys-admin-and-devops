@@ -2,68 +2,34 @@
 
 #This is a script analyzing basic server performance stats
 
-#Check for package managers for different distros
-#Debian
-if command -v apt > /dev/null; then
-    if which mpstat > /dev/null; then
-        #Displaying total CPU usage
-        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
-        mpstat
-    else
-        sudo apt install sysstat -y
-        #Displaying total CPU usage
-        echo $'\n+++++ Total CPU Usage +++++'
-        mpstat
-    fi
-#RHEL
-elif command -v dnf > /dev/null; then
-    if which mpstat > /dev/null; then
-        #Displaying total CPU usage
-        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
-        mpstat
-    else
+#Function to check package manager & install sysstat
+check_pkg_manager_install_sysstat() {
+    #Debian
+    if command -v apt > /dev/null; then
+        sudo apt update && sudo apt install sysstat -y
+    #RHEL
+    elif command -v dnf > /dev/null; then
         sudo dnf install sysstat -y
-        #Displaying total CPU usage
-        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
-        mpstat
-    fi
-#Arch
-elif command -v pacman > /dev/null; then
-    if which mpstat > /dev/null; then
-        #Displaying total CPU usage
-        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
-        mpstat
+    #Arch
+    elif command -v pacman > /dev/null; then
+        sudo pacman -S sysstat --noconfirm
+    #OpenSuse
+    elif command -v zypper > /dev/null; then
+        sudo zypper install -y sysstat
+    #Older RHEL
+    elif command -v yum > /dev/null; then
+        sudo yum install sysstat -y
     else
-        sudo pacman install sysstat -y
-        #Displaying total CPU usage
-        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
-        mpstat
-    fi
-#OpenSuse
-elif command -v zypper > /dev/null; then
-    if which mpstat > /dev/null; then
-        #Displaying total CPU usage
-        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
-        mpstat
-    else
-        sudo zypper install sysstat -y
-        #Displaying total CPU usage
-        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
-        mpstat
-    fi
-#Older RHEL
-elif command -v yum > /dev/null; then
-    if which mpstat > /dev/null; then
-        #Displaying total CPU usage
-        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
-        mpstat
-    else
-        sudo dnf install sysstat -y
-        #Displaying total CPU usage
-        echo $'\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++'
-        mpstat
-    fi
-else
-    echo 'Error finding a supported package manager (apt, dnf, pacman, yum or zypper)'
+    echo 'Error: Supported package like  (apt, dnf, pacman, yum or zypper) manager not found'
     exit 1
 fi
+}
+
+#If mpstat is not installed, install using system's package manager
+if ! command -v mpstat &> /dev/null; then
+    check_pkg_manager_install_sysstat
+fi
+
+#Displaying total CPU usage
+echo -e "\n +++++++++++++++++++++++++++++++++++ Total CPU Usage +++++++++++++++++++++++++++++++++++\n"
+mpstat

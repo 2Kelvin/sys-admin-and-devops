@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Learning bash functions
+# Bash reads file from top to bottom, you must define a function at the top before calling it
+# All variables in bash are global, if you change the value of a variable in a function you change its value even outside the function
+# To make the variable local like in a function use the keyword local
+# Example of how to run this program: "./functions Jim 92 97"
+name="May"
+greet_user() {
+	local name="Levi"
+	echo "Hello $1"
+	echo $name
+}
+
+# unlike prog languages like js and python ... when calling a function in bash don't use parenthesis ()
+# $1 represents the first argument passed when running this file in the terminal
+greet_user "$1"
+
+echo $name
+
+
+# addition function
+add() {
+	# adding arguments 2 and 3 passed in the terminal
+	# function scope reoders args and treats the arguments passed in as arg1 and arg2
+	# that's why echo adds $1 and $2 which are gotten from the terminal args $2 and $3 respectively
+	# use $(()) to do math operations in bash
+	echo $(($1 + $2))
+}
+
+# Bash functions have no return statements, instead you capture the result of a function to a variable to save it
+sum_of_args=$(add $2 $3)
+echo "The sum of arguments 2($2) and 3($3) is $sum_of_args"

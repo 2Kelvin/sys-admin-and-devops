@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# log_message appends a timestamp and a message passed in the terminal to activity log file
+log_message() {
+	# checking if any message argument was passed, failing if none was provided, writing file if provided
+	# checking if the first arg $1 is not empty, before proceeding
+	if [[ -z "$1"  ]]; then
+		echo "No message argument provided."
+		return 1
+	else
+		# assigning all the text passed in the terminal while running this file to a variable message
+		local message="$@"
+		# custom formatted date
+		local file_timestamp=$(date +%Y-%m-%dT%H:%M:%S)
+		# appending a log message to activity.log file
+		echo "[$file_timestamp] $message" >> activity.log
+		# testing if the logging to file was succesful
+		if [ $? -eq 0 ]; then
+			echo "Log file updated successfully!"
+			return 0
+		else
+			echo "Error: Could not update the log file!"
+			return 1
+		fi
+	fi
+}
+
+# $@ grabs all the arguments passed to the terminal
+log_message "$@"

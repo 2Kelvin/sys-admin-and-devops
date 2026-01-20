@@ -7,6 +7,6 @@
 # then at the end print a string with the total number of server users calculated before
 awk '$2 == "online" { print } { all_servers_users += $4 } END { print "\n Total number of users on all our servers is: " all_servers_users "\n" }' servers.txt
 
-# To calculate users in online servers only, add the calculation logic to the same print sorted online servers curly brackets
+# To calculate users in online servers only, add the calculation logic to the same print sorted with online servers curly brackets, separated by a semicolon
 # BEGIN here is just adding a line break for beauty purposes in output
 awk 'BEGIN { print "\n"  } $2 == "online" { print $0; all_online_users += $4 } END { print "\nTotal Online Users: ", all_online_users, "\n" }' servers.txt

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Grabbing CPU usage stats from '/proc/stat' file
+# BEGIN prints a table headers for the CPU stats at the top
+# I then grab the first line with the average CPU stats of all CPU cores using the 'cpu' filter
+# Then print each CPU column of data excluding the name CPU
+# I pipe the data fetched by awk to column -t to display a nice looking table
+# 'TOTAL_CPU_USAGE' is the sum of all the columns fetched above and is the data carried by the variable total_cpu_time calculated below
+
+echo -e "\nCPU USAGE STATS 1\n"
+
+awk 'BEGIN { 
+	print "USER", "NICE", "SYSTEM", "IDLE", "iOWAIT", "IRQ", "SOFTIRQ", "STEAL", "TOTAL_CPU_USAGE"  } 
+$1 == "cpu" {
+	total_cpu_time = $2 + $3 + $4 + $5 + $6 + $7 + $8 + $9;
+	 print $2, $3, $4, $5, $6, $7, $8, $9, total_cpu_time
+}' /proc/stat | column -t
+
+# Sleep for 1 second to grab a second set of the CPU usage stats
+sleep 1
+
+# 2nd set of CPU usage stats
+echo -e "\nCPU USAGE STATS 2 (after 1 second)\n"
+
+awk 'BEGIN {
+        print "USER", "NICE", "SYSTEM", "IDLE", "iOWAIT", "IRQ", "SOFTIRQ", "STEAL", "TOTAL_CPU_USAGE"  }
+$1 == "cpu" {
+        total_cpu_time = $2 + $3 + $4 + $5 + $6 + $7 + $8 + $9;
+         print $2, $3, $4, $5, $6, $7, $8, $9, total_cpu_time
+}' /proc/stat | column -t

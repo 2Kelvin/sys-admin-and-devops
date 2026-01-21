@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# awk formula
+# awk 'pattern { action }' input-file
+
 echo -e "Checking servers\n"
 
 # Columns: $1: serverID, $2: Status, $3: Uptime and $4: Users

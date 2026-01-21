@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Learning about read command
+# read takes input from a user or a file and assigns it to a variable
+
+# example of reading input from user from the value they give on the terminal
+# user_name is the value the user types as their name after being prompted to give one
+echo "Enter your name sir"
+read user_name
+echo "Welcome to the system, $user_name"
+
+# this is the more pro way of doing the above user input read, by using 'read -p'
+# 'read -s' is for silent: used for picking up sensitive data like passwords etc without displaying it in the terminal as the user writes them
+# to display the prompt for a silent input you have to use 'read -sp' not 'read -s'; in order to display the prompt to the user but the user input will be hidden
+read -p "Enter your name sir: " usr_name
+read -sp "Enter your password too: " pswd
+echo -e "\n"
+echo "Your credentials are: Username: $usr_name, Password: $pswd\n Welcome to the system, $usr_name."
+
+# you can assign multiple variables to values using read
+# read will split the user input using whitespaces and assign each split up word to each variable
+# if the user input is larger than the variable names, each variable name gets one split up word and then the last variable gets all the other split up words
+# using the example below if user gets asked asked for 3 colors and they provide 5 colors (red, blue, green, black, teal), here is what the color variables value assignment looks like...
+# ... $color1=red, $color2=blue, $color3=green black teal
+read -p "Enter your fav 3 colors: " color1 color2 color3 && read -sp " and your password: " psswd
+echo -e "\n"
+echo "$color1 $color2 $color3 $psswd"
+
+# -t flag represents timeout; time in seconds for a prompt to disappear
+# -n flag represents character limit; how many characters you want to read e.g. 1, 4 etc
+# this is a press any key to continue prompt, and if any key is not pressed in 5 seconds, the prompt disappears
+read -t 5 -n 1 -p "Press any key to continue (waiting 5s...): "
+
+# read always reads input/files and stops at a new line, to change this to a custom symbol you would like read to stop...
+# ... use the '-d' flag followed by the symbol (in double )quotes you want read to stop at
+read -d "." paragraph

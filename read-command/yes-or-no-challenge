@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# asking user whether to continue, reading only one character (read -n 1)
+read -n 1 -p "Continue? (y/n): " answer

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Method 2: Read and extract CPU usage info from "/proc/stat" file
+cpu_idle_time1=0
+total_cpu_usage_time1=0
+cpu_idle_time2=0
+total_cpu_usage_time2=0
+
+read -r << (awk 'BEGIN { 
+    print "USER", "NICE", "SYSTEM", "IDLE", "iOWAIT", "IRQ", "SOFTIRQ", "STEAL", "TOTAL_CPU_USAGE"  } 
+$1 == "cpu" {
+    total_cpu_time = $2 + $3 + $4 + $5 + $6 + $7 + $8 + $9;
+    print $2, $3, $4, $5, $6, $7, $8, $9, total_cpu_time
+}
+' /proc/stat)

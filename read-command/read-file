@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Learning about read command reading files
+
+# reading /proc/stat file
+# -r flag prevents backslashes from being interpreted as escape characters
+# $line represents every line in the file 
+while read -r line; do
+    echo "$line"
+done < /proc/stat
+
+# read splitting line using other characters, in this case colon instead of whitespace
+# you do this by specifying the Internal Field Separator (IFS) that you want read to explit use to split lines
+while IFS=":" read -r user id dept; do
+    echo "$user(ID: $id) works in $dept department"
+done < employees.txt

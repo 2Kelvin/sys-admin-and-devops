@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# [] and [[]] => tests and comparisons (if)
+# [[]]: double brackets is more modern and more preferred than single brackets
+# checking if a file exists
+if [[ -f backup.sh ]]; then
+    echo "backup.sh file exists"
+else
+    echo "backup.sh file does not exist"
+fi
+
+# checking if a folder exists
+if [[ -d pictures ]]; then
+    echo "pictures folder exists"
+else
+    echo "pictures folder does not exist"
+fi
+
+# pattern matching
+name="Justin"
+if [[ $name == J* ]]; then
+    echo "Name starts with J"
+else
+    echo "Name does not start with J"
+fi
+
+# () => execution
+# () runs in a separate subshell/child process hence does not mutate other similar variables in main script
+# $() => substitution; captures the output of another command and stores it in a variable
+# (()) => Math operations only
+((sum=5+7))
+echo $sum
+age=$((54+6))
+echo $age
+echo $((60/10))
+total=$(( 10 * 5 ))
+echo $total
+
+# {} => expansion; i.e. shorthand for long lists or strings using '..'
+# {a..e} expands from letter a to e
+echo {a..e}
+# {1..9} expands from number 1 to 9
+echo {1..9}
+# custom list of strings (don't add whitespace in {})
+echo boots_{clean,dirty}.txt
+# protects variables form being mixed up with strings
+echo "${name}codes"
+# working with folders
+mkdir {folder1,folder2,folder3}
+ls
+rm -r {folder1,folder2,folder3}
+ls
+# creating many folders and nested folders with one command
+mkdir -p {pictures,documents/{coding,ebooks},videos}
+ls
+rm -r {pictures,documents,videos}
+ls

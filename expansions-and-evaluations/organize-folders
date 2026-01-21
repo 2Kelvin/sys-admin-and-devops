@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Bash script organising photography project folders
+# creating 3 folders
+mkdir {raw,edited,final}
+
+# creating some test jpg files
+touch {oen.jpg,teo.jpg,ins.jpg}
+# counting all jpg files in this folder and assigning them to a variable
+jpg_files_count=$( ls *.jpg | wc -l )
+echo "There are $jpg_files_count jpg files in this folder"
+
+# checking if we have some jpg photo files
+if [[ $jpg_files_count -gt 0 ]]; then
+    echo "Photos found, starting organization..."
+    # calculating credits
+    (( credits=jpg_files_count*2 ))
+    echo "You earned $credits credits today!"
+fi
+
+# clean up
+# rm {oen.jpg,teo.jpg,ins.jpg}
+# rm -r {raw,edited,final}

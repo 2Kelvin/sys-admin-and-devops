@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Method 2: Read and extract CPU usage info from "/proc/stat" file
+# read first batch idleCPUTime and totalCPUusageTime stats
+# in awk: i grab the line with the cpu filter, to get the average stats of all cpu cores...
+# ... calculate the total cpu usage time by adding columns 2-9 ...
+# ... and then including this total as part of the output with the other cpu stat columns to be read
+# in read: read stores all the cpu stat columns in array (cpu_time_stats) ...
+# ... and I fetch the cpu_time_stats and total_cpu_usage_time1 from cpu_time_stats array
+read -a cpu_time_stats < <(awk '$1 == "cpu" {
+	total_cpu_time = $2 + $3 + $4 + $5 + $6 + $7 + $8 + $9;
+	print $2, $3, $4, $5, $6, $7, $8, $9, total_cpu_time
+}' /proc/stat)
+cpu_idle_time1=${cpu_time_stats[3]}
+total_cpu_usage_time1=${cpu_time_stats[8]}
+
+# echo -e "cpu_idle_time1: $cpu_idle_time1 : total_cpu_usage_time1: $total_cpu_usage_time1\n"
+
+# sleep
+sleep 1
+
+# read second batch idleCPUTime and totalCPUusageTime stats
+read -a cpu_time_stats2 < <(awk '$1 == "cpu" {
+	total_cpu_time = $2 + $3 + $4 + $5 + $6 + $7 + $8 + $9;
+	print $2, $3, $4, $5, $6, $7, $8, $9, total_cpu_time
+}' /proc/stat)
+cpu_idle_time2=${cpu_time_stats2[3]}
+total_cpu_usage_time2=${cpu_time_stats2[8]}
+
+# echo -e "cpu_idle_time2: $cpu_idle_time2 : total_cpu_usage_time2: $total_cpu_usage_time2\n"

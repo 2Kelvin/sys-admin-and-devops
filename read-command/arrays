@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# '-a' flag represents array
+# so fruit_list is an array of fruits input by the user
+read -p "Enter your favorite fruits: " -a fruit_list
+# number of items/fruits in my fruit_list array
+echo "${#fruit_list[@]}"
+# accessing first fruit/item in the array fruit_list
+echo "${fruit_list[0]}"

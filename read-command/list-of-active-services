@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Capturing a list of "Active Services" from command (get_services that outputs: nginx mysql ssh) and storing them in an array for counting
+# -a represents array
+# since there is no logic for get_services command, I'm using a string of get_services outputs: nginx mysql ssh
+# if the command was there this is the logic: read -a services < <(get_services)
+read -a active_services_array <<< "nginx mysql ssh"
+# getting mysql service
+echo "${active_services_array[1]}"

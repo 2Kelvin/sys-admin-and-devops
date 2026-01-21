@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# < reads from file
+# <<< reads from a string
+# < <() reads from other commands.
+
+# Process Substitution < <(command), treats the output of a command as if it were a temporary file
+# -r flag prevents backslashes from being interpreted as escape characters
+read -r pc_user other_info < <(who)
+# grabbing the first user listed who is logged in
+echo "The current logged in user is: $pc_user"
+
+
+# reading a string
+read greeting name <<< "Hello Stark"
+echo -e "\nName is '$name' and greeting text is '$greeting'"

@@ -32,8 +32,11 @@ total_cpu_usage_time2=${cpu_time_stats2[8]}
 (( diff_total_cpu_time = total_cpu_usage_time2 - total_cpu_usage_time1  ))
 # echo "diff_idle_cpu_time: $diff_idle_cpu_time : diff_total_cpu_time: $diff_total_cpu_time"
 
-# -v flag in awk creates an awk variable and assigns the variable we calculated above in the bash script
-# the calculation happens in the BEGIN clause
-cpu_usage_percent=$(awk -v idle="$diff_idle_cpu_time" -v total="$diff_total_cpu_time" 'BEGIN {printf "%.2f", (total - idle) / total * 100}')
+# -v flag in awk: creates an awk variable and assigns the variables we calculated above in the bash script
+# the calculation happens in the BEGIN clause => total_time - idle_time = actual usage_time ...
+# ... usage_time / total-time * 100 gets the percentage of the actual usage time of the CPU
+cpu_usage_percent=$(
+	awk -v idle="$diff_idle_cpu_time" -v total="$diff_total_cpu_time" 'BEGIN {printf "%.2f", (total - idle) / total * 100}'
+)
 echo -e "\n+++++++++++++++++++++++++++++++++++++++++++++++ CPU USAGE +++++++++++++++++++++++++++++++++++++++++++++++\n"
 echo "Total CPU Usage: $cpu_usage_percent%"

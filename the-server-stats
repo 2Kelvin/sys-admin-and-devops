@@ -13,7 +13,6 @@ read -a cpu_time_stats < <(awk '$1 == "cpu" {
 }' /proc/stat)
 cpu_idle_time1=${cpu_time_stats[3]}
 total_cpu_usage_time1=${cpu_time_stats[8]}
-
 # echo -e "cpu_idle_time1: $cpu_idle_time1 : total_cpu_usage_time1: $total_cpu_usage_time1\n"
 
 # sleep
@@ -26,5 +25,15 @@ read -a cpu_time_stats2 < <(awk '$1 == "cpu" {
 }' /proc/stat)
 cpu_idle_time2=${cpu_time_stats2[3]}
 total_cpu_usage_time2=${cpu_time_stats2[8]}
-
 # echo -e "cpu_idle_time2: $cpu_idle_time2 : total_cpu_usage_time2: $total_cpu_usage_time2\n"
+
+# find the differences in batch 1 and 2
+(( diff_idle_cpu_time = cpu_idle_time2 - cpu_idle_time1  ))
+(( diff_total_cpu_time = total_cpu_usage_time2 - total_cpu_usage_time1  ))
+# echo "diff_idle_cpu_time: $diff_idle_cpu_time : diff_total_cpu_time: $diff_total_cpu_time"
+
+# -v flag in awk creates an awk variable and assigns the variable we calculated above in the bash script
+# the calculation happens in the BEGIN clause
+cpu_usage_percent=$(awk -v idle="$diff_idle_cpu_time" -v total="$diff_total_cpu_time" 'BEGIN {printf "%.2f", (total - idle) / total * 100}')
+echo -e "\n+++++++++++++++++++++++++++++++++++++++++++++++ CPU USAGE +++++++++++++++++++++++++++++++++++++++++++++++\n"
+echo "Total CPU Usage: $cpu_usage_percent%"

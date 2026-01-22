@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Method 2: Read and extract CPU usage info from "/proc/stat" file
+# +++++++++++++++++++++++++++++++++++++++++++++++ CPU USAGE +++++++++++++++++++++++++++++++++++++++++++++++
+
+# Reading and extract CPU usage info from "/proc/stat" file
 # read first batch idleCPUTime and totalCPUusageTime stats
 # in awk: i grab the line with the cpu filter, to get the average stats of all cpu cores...
 # ... calculate the total cpu usage time by adding columns 2-9 ...
@@ -40,3 +42,19 @@ cpu_usage_percent=$(
 )
 echo -e "\n+++++++++++++++++++++++++++++++++++++++++++++++ CPU USAGE +++++++++++++++++++++++++++++++++++++++++++++++\n"
 echo "Total CPU Usage: $cpu_usage_percent%"
+
+# +++++++++++++++++++++++++++++++++++++++++++++++ MEMORY USAGE +++++++++++++++++++++++++++++++++++++++++++++++
+# Reading /proc/meminfo file to fetch memory stats
+# free memory
+# grep returns data in this format: MemFree: 6429012 kB, but I only need the memory data hence the read code below
+# _ mem_free _ => _ is MemFree texr, mem_used is actual memory data and _ is memory size 'kb' text
+echo -e "\n+++++++++++++++++++++++++++++++++++++++++++++++ MEMORY USAGE +++++++++++++++++++++++++++++++++++++++++++++++\n"
+read _ mem_free _ < <(grep 'MemFree' /proc/meminfo)
+echo "Free Memory: $mem_free kbs"
+# fetching total memory
+read _ total_mem _ < <(grep 'MemTotal' /proc/meminfo)
+echo "Total Memory: $total_mem kbs"
+# used memory
+(( mem_used=total_mem-mem_free ))
+echo "Used Memory: $mem_used kbs"
+# memory percentage

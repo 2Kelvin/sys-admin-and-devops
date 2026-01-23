@@ -40,21 +40,35 @@ total_cpu_usage_time2=${cpu_time_stats2[8]}
 cpu_usage_percent=$(
 	awk -v idle="$diff_idle_cpu_time" -v total="$diff_total_cpu_time" 'BEGIN {printf "%.2f", (total - idle) / total * 100}'
 )
-echo -e "\n+++++++++++++++++++++++++++++++++++++++++++++++ CPU USAGE +++++++++++++++++++++++++++++++++++++++++++++++\n"
-echo "Total CPU Usage: $cpu_usage_percent%"
+echo -e "\n--- CPU Usage ---"
+echo -e "\nTotal CPU Usage: $cpu_usage_percent%\n"
 
 # +++++++++++++++++++++++++++++++++++++++++++++++ MEMORY USAGE +++++++++++++++++++++++++++++++++++++++++++++++
-# Reading /proc/meminfo file to fetch memory stats
-# free memory
-# grep returns data in this format: MemFree: 6429012 kB, but I only need the memory data hence the read code below
-# _ mem_free _ => _ is MemFree texr, mem_used is actual memory data and _ is memory size 'kb' text
-echo -e "\n+++++++++++++++++++++++++++++++++++++++++++++++ MEMORY USAGE +++++++++++++++++++++++++++++++++++++++++++++++\n"
-read _ mem_free _ < <(grep 'MemFree' /proc/meminfo)
-echo "Free Memory: $mem_free kbs"
-# fetching total memory
-read _ total_mem _ < <(grep 'MemTotal' /proc/meminfo)
-echo "Total Memory: $total_mem kbs"
-# used memory
-(( mem_used=total_mem-mem_free ))
-echo "Used Memory: $mem_used kbs"
-# memory percentage
+awk '
+	# function that converts fetched memory data from kbs to more readable sizes
+	# unlike printf, sprintf returns a formatted string instead of printing it
+	function convert_mem(mem) {
+		if (mem >= 1048576){
+			#  convert memory to GB
+			return sprintf("%.2f GB", mem/1048576)
+		} else if (mem >= 1024){
+			#  convert memory to MB
+			return sprintf("%.2f MB", mem/1024)
+		} else {
+			return sprintf("%d KB", mem)
+		}
+	}
+
+	BEGIN { print "\n--- Memory Usage ---\n" }
+	
+	# grabbing total and available memory from file
+	$1 == "MemTotal:" { total_mem=$2 }
+	$1 == "MemAvailable:" { avilable_mem=$2 }
+	END { 
+		# calculating used memory
+		memory_used = total_mem - avilable_mem
+		# printing out the data fetched
+		printf "Total memory used: %s (%d%%)\nTotal available memory: %s (%d%%)\n",
+		 convert_mem(memory_used), (memory_used/total_mem)*100, convert_mem(avilable_mem), (avilable_mem/total_mem)*100
+	}
+' /proc/meminfo

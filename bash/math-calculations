@@ -1,0 +1,63 @@
+#!/bin/bash
+
+echo -e "++++++++++++++++++++++++++ bc ++++++++++++++++++++++++++\n" 
+# Math calculations using 'bc'
+echo "Kilograms: $(echo "scale=2; 80/3" | bc)"
+# echo "scale=2; 80/3" | bc
+# echo -n "Kilos are: "; echo "scale=2; 80/3" | bc
+kgs=$(echo "scale=2; 80/3" | bc)
+echo $kgs
+
+# for decimals smaller than one, bc doesn't add a leading 0 e.g. => .75 instead of 0.75 ...
+# ... to add this leading 0, format bc uotput with printf
+num1=432
+num2=992
+printf "%0.3f\n" $(echo "scale=3; $num1/$num2" | bc)
+# use bc to compare numbers with decimals
+echo "3.4 > 1.4" | bc
+
+echo -e "\n++++++++++++++++++++++++++ awk ++++++++++++++++++++++++++\n"
+# Math calculations using 'awk'
+# BEGIN tells awk to start calculation immediately without waiting for an input file
+my_avg=$(awk 'BEGIN {print 100/3}')
+echo $my_avg
+
+# using awk with variables from your bash script for calculation
+# -v flag substitutes these variables
+score1=96
+score2=88
+average_score=$(awk -v var1="$score1" -v var2="$score2" 'BEGIN { print ((var1+var2))/2 }')
+echo "AVerage score: $average_score"
+
+# to round off awk calculations, use printf
+# rounding off to 2 decimal places
+my_rand=$(awk 'BEGIN {printf "%.2f", 100/3000}')
+echo "Rounded off awk average calculation using printf: $my_rand"
+
+echo -e "\n++++++++++++++++++++++++++ python ++++++++++++++++++++++++++\n" 
+# Math calculations using 'python3'
+# round just rounds off the decimal number
+rating=$(python3 -c "print(round(10/7, 2))")
+echo "Rating: $rating"
+
+# example calculations
+# example1
+echo -e "\nYou have used: $(echo "scale=1; 150/400*100" | bc) % of your space"
+
+# example2
+price=19.99
+tax=$(awk -v p="$price" 'BEGIN { printf "%.4f", p * 0.05 }')
+echo "🐧 5% tax on \$$price is \$$tax"
+# total_price=$(awk -v p="$price" -v t="$tax" 'BEGIN { printf "%.2f", p+t }')
+# echo "🐧 The total price therefore is \$$total_price"
+awk -v p="$price" -v t="$tax" 'BEGIN { printf "🐧 The total price therefore is $%.2f\n", p+t }'
+
+# example3: calculating average price of all items in prices.txt file
+# NR is an awk command that holds the total number of records in a file ...
+# ...since the first line is the title of the products, we want NR to hold the actual number of products hence NR > 1...
+# ... which starts counting after the first line and stores this product count in prod_count variable incrementing it on each line
+awk '
+BEGIN { print "--- Price Report ---" } 
+NR > 1 { sum += $2; prod_count++ } 
+END { printf "The total price of all products is $%.2f and the average product price is $%.2f\n", sum, sum/prod_count }
+' prices.txt

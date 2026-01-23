@@ -1,0 +1,4 @@
+Item    Price
+Apple   1.20
+Banana  0.50
+Cherry  2.99

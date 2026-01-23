@@ -74,8 +74,10 @@ awk '
 ' /proc/meminfo
 
 # +++++++++++++++++++++++++++++++++++++++++++++++ DISK USAGE +++++++++++++++++++++++++++++++++++++++++++++++
+# df categories: $1: filesystem, $2: 1K-blocks, $3: Used, $4: Available, $5: Use Percentage and $6: Mounted on
 # filter out only physical drives => drives starting with /dev/ are physical drives, this is what we want
 # -k deliveres space in KBs
+# grep '^/dev/': ^ means start of a line. so look for filesystems with the name dev at the start and not anywhere else
 df -k | grep '^/dev/' | awk '
 BEGIN { print "\n--- Disk Usage ---\n" }
 {

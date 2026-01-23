@@ -72,3 +72,28 @@ awk '
 		 convert_mem(memory_used), (memory_used/total_mem)*100, convert_mem(avilable_mem), (avilable_mem/total_mem)*100
 	}
 ' /proc/meminfo
+
+# +++++++++++++++++++++++++++++++++++++++++++++++ DISK USAGE +++++++++++++++++++++++++++++++++++++++++++++++
+# filter out only physical drives => drives starting with /dev/ are physical drives, this is what we want
+# -k deliveres space in KBs
+df -k | grep '^/dev/' | awk '
+BEGIN { print "\n--- Disk Usage ---\n" }
+{
+	total_space += $2;
+	used_space += $3;
+	free_space += $4
+}
+END {
+	# converting from KB to GB
+	total_space_gb = total_space / 1048576
+	used_space_gb = used_space / 1048576
+	free_space_gb = free_space / 1048576
+
+	# calculating percentage
+	used_space_pct = (used_space / total_space) * 100
+	free_space_pct = (free_space / total_space) * 100
+
+	printf "Total space: %.2fGB\nUsed space: %.2fGB (%.1f%%)\nFree space: %.2fGB (%.1f%%)\n",
+	 total_space_gb, used_space_gb, used_space_pct, free_space_gb, free_space_pct
+}
+'

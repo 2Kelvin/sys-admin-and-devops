@@ -1,7 +1,15 @@
 #!/bin/bash
 
-# +++++++++++++++++++++++++++++++++++++++++++++++ CPU USAGE +++++++++++++++++++++++++++++++++++++++++++++++
+echo "--------------------------------------------"
+echo "Welcome Sys Admin! Here are the server stats"
+echo "--------------------------------------------"
 
+# Color variables
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+# +++++++++++++++++++++++++++++++++++++++++++++++ CPU USAGE +++++++++++++++++++++++++++++++++++++++++++++++
 # Reading and extract CPU usage info from "/proc/stat" file
 # read first batch idleCPUTime and totalCPUusageTime stats
 # in awk: i grab the line with the cpu filter, to get the average stats of all cpu cores...
@@ -40,8 +48,8 @@ total_cpu_usage_time2=${cpu_time_stats2[8]}
 cpu_usage_percent=$(
 	awk -v idle="$diff_idle_cpu_time" -v total="$diff_total_cpu_time" 'BEGIN {printf "%.2f", (total - idle) / total * 100}'
 )
-echo -e "\n--- CPU Usage ---"
-echo -e "\nTotal CPU Usage: $cpu_usage_percent%\n"
+# echo -e "\n--- CPU Usage ---"
+echo -e "\nTotal CPU Usage: ${GREEN}$cpu_usage_percent%${NC}\n"
 
 # +++++++++++++++++++++++++++++++++++++++++++++++ MEMORY USAGE +++++++++++++++++++++++++++++++++++++++++++++++
 awk '
@@ -59,7 +67,7 @@ awk '
 		}
 	}
 
-	BEGIN { print "\n--- Memory Usage ---\n" }
+	# BEGIN { print "\n--- Memory Usage ---\n" }
 	
 	# grabbing total and available memory from file
 	$1 == "MemTotal:" { total_mem=$2 }
@@ -68,10 +76,12 @@ awk '
 		# calculating used memory
 		memory_used = total_mem - avilable_mem
 		# printing out the data fetched
-		printf "Total memory used: %s (%d%%)\nTotal available memory: %s (%d%%)\n",
+		printf "Memory Used: %s (%d%%)\nAvailable Memory: %s (%d%%)\n",
 		 convert_mem(memory_used), (memory_used/total_mem)*100, convert_mem(avilable_mem), (avilable_mem/total_mem)*100
 	}
 ' /proc/meminfo
+
+echo -e "\n"
 
 # +++++++++++++++++++++++++++++++++++++++++++++++ DISK USAGE +++++++++++++++++++++++++++++++++++++++++++++++
 # df categories: $1: filesystem, $2: 1K-blocks, $3: Used, $4: Available, $5: Use Percentage and $6: Mounted on
@@ -79,7 +89,7 @@ awk '
 # -k deliveres space in KBs
 # grep '^/dev/': ^ means start of a line. so look for filesystems with the name dev at the start and not anywhere else
 df -k | grep '^/dev/' | awk '
-BEGIN { print "\n--- Disk Usage ---\n" }
+# BEGIN { print "\n--- Disk Usage ---\n" }
 {
 	total_space += $2;
 	used_space += $3;
@@ -99,3 +109,16 @@ END {
 	 total_space_gb, used_space_gb, used_space_pct, free_space_gb, free_space_pct
 }
 '
+
+# +++++++++++++++++++++++++++++++++++++++++++++++ Top 5 High CPU Usage Processes +++++++++++++++++++++++++++++++++++++++++++++++
+# fetching the 5 linux processes with the highest CPU usage
+# ps flags => -e: displays all processes; -o: let's you customize fields you want ps to fetch by ...
+# ... like pcpu(cpu percentage), pid (process id), comm (command/process name)...
+# ... --sort is for sorting the data ps fetched. --sort=-pcpu: sort cpu percentage by descending order (the '-' means descending order)
+echo -e "\n--- Top 5 High CPU Usage Processes ---\n"
+ps -eo pcpu,pid,comm --sort=-pcpu | head -n 6 | column -t
+
+# +++++++++++++++++++++++++++++++++++++++++++++++ Top 5 High Memory Usage Processes +++++++++++++++++++++++++++++++++++++++++++++++
+# fetching the 5 linux processes with the highest CPU usage
+echo -e "\n--- Top 5 High Memory Usage Processes ---\n"
+ps -eo pmem,pid,comm --sort=-pmem | head -n 6 | column -t

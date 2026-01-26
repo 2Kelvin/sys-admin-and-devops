@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# cli tool to compress logs with file stamps; just pass it the pth to the logs
+log_tool() {
+    # checking if arg passed uses absolute path (recommended for script to work properly)
+    if [[ "$1" == /* ]]; then
+        # make a folder and copy all logs to one folder to avoid tarbomb
+        # $1: log folder argument passed in terminal; *: all log files in the folder; cp -r: to recursively copy folders too
+        mkdir all_your_logs_folder
+        cp -r $1/* all_your_logs_folder
+
+        # fetching timestamp & naming compressed file with timestamp
+        local filename="log_archive_$(date +%Y%m%d_%H%M%S).tar.gz"
+        # compressing logs and storing them in home folder
+        tar -czf ~/"$filename" all_your_logs_folder
+
+        # error checking
+        if [[ $? -eq 0 ]]; then
+            echo "✅ Backup successful"
+            # deleting all_your_logs_folder
+            rm -r all_your_logs_folder
+        else
+            echo "❌ Backup failed with exit code $?"
+            # deleting all_your_logs_folder
+            rm -r all_your_logs_folder
+        fi
+    else
+        echo -e "\n🚨 \e[31mKindly use an absolute path to your logs folder!" 
+    fi
+}
+
+log_tool $1

@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# cli tool to compress logs with file stamps; just pass it the pth to the logs
+backup_logs_tool() {
+    # checking if an argument has been passed in the terminal; if no arg passed fail otherwise run script
+    # -z flag checks if the length of the first argument ($1) is zero
+    if [[ -z "$1" ]]; then
+        echo -e "\n🚨 \e[31mKindly provide an argument (path to logs) while running this program!" 
+        return 1
+    else
+        # checking if arg passed uses absolute path (recommended for script to work properly)
+        if [[ "$1" == /* ]]; then
+            # make a folder and copy all logs to one folder to avoid tarbomb
+            # $1: log folder argument passed in terminal; *: all log files in the folder; cp -r: to recursively copy folders too
+            mkdir backup_logs
+            cp -r "$1"/* backup_logs
+
+            # fetching timestamp & naming compressed file with timestamp
+            local filename="log_archive_$(date +%Y%m%d_%H%M%S).tar.gz"
+            # compressing logs and storing them in home folder
+            tar -czf ~/"$filename" backup_logs
+
+            # error checking
+            if [[ $? -eq 0 ]]; then
+                echo "✅ Backup successful"
+                # deleting backup_logs
+                rm -r backup_logs
+            else
+                echo "❌ Backup failed with exit code $?"
+                # deleting backup_logs
+                rm -r backup_logs
+            fi
+        else
+            echo -e "\n🚨 \e[31mKindly use an absolute path to your logs folder!"
+            return 1
+        fi
+    fi
+}
+
+backup_logs_tool "$1"
+
+# TODO
+# fix cp and read access denied in /var/log and any other root files
+# set schedule for backup
+# set delete schedule of older logs

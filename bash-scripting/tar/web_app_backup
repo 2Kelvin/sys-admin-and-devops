@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# backing up a web application
+webapp_path="/var/www/html"
+backup_path="~/backups"
+time_stamp=$(date +%Y-%m-%d_%H%M%S)
+file_name="webapp_backup_$timestamp.tar.xz"
+
+tar --exclude='*.log' -cJvf "$backup_path/$file_name" "$webapp_path"
+
+if [[ $? -eq 0 ]]; then
+    echo "✅ Backup successful"
+else
+    echo "❌ Backup failed with exit code $?"
+fi

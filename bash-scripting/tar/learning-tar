@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# tar is an archiving utility; extracting & compressing data; for data backups, migration & distribution
+# common tar flags: 
+# tar -v: verbose (show progress in terminal) 🗣️
+# tar -c: create a new archive 🆕 (puts/bundles file together in one box)
+# tar -f: specify file name 📄 (should be placed as last flag so as to specify file name after)
+# tar -t: list/test contents without extracting 🔍
+# unlike archiving, compression saves space on files by compressing them
+# tar -z: compress using gzip (fast, low CPU usage, standard compression algorithm) ⚡
+# tar -j: compress using bzip2 (better compression than gzip, but slower) 📉
+# tar -J: xz (best comprssion ratio, slow, but great for long term usage) 💎
+# tar -x: extract files from archive 📂
+
+# creating a basic archive: backing up logs folder to backup.tar
+tar -cvf backup_logs.tar logs
+# checking the contents of my new backup file: backup_logs
+tar -tf backup_logs.tar
+
+# compressing logs using gzip (to save space)
+# format: create,zip,verbose,file_name
+tar -czvf backup_logs.tar.gz logs
+# checking compressed contents: adding -z flag for command to know which compression algorithm to read
+tar -tzf backup_logs.tar.gz
+
+# extracting all archived files to the specified folder using -C flag, create the folder first if it doesn't exist
+# use '--strip-components=1' to extract directly into the new created folder without subfolders, if you want subfolders, remove it
+tar -xvf backup_logs.tar -C archived_logs --strip-components=1
+
+# extracting all compressed files
+# extracts to original file name, in this case this extracts to 'logs'
+tar -xzvf backup_logs.tar.gz
+
+# extracting one file from a compressed file
+# extracting only 'two.log'
+# format: tar -xzvf compressed_file path_to_file_in_the_compressed_file
+tar -xzvf backup_logs.tar.gz logs/two.log
+
+# '--strip-components=N' skips top level folders when extracting
+# N: is number of levels you want to skip/remove; could be 3 for 3 folders, 5 for 5 folders etc
+
+# transferring a tar file over the netweork using SSH 
+# tar -czf - /source/dir | ssh user@remote "tar -xzf - -C /dest/dir"
+# The - tells tar to send the data to "standard output" instead of a file.
+
+# tar's '--listed-incremental' flag takes snapshots of only files that have changed
+# when doing regular backups, this saves a lot of time and storage, instead of always transferring the whole file all the time
+
+# exclude tar files using '--exclude' flag: just as a 'gitgnore' file works
+# insert before archive name for it to work
+# also keeps tar files clean
+# tar --exclude='node_modules' -czvf project.tar.gz project/
+
+# example of removing tar backups older than a week to save space
+# -mtime flag sorts files by days, in our case more than 7 days (+7)
+# to sort exactly 7 days (7), less than 7 days (-7) 
+# find /path/to/backups_folder -name "*.tar.xz" -mtime +7 -delete
+# printing the files before deleting
+# find /path/to/backups_folder -name "*.tar.xz" -mtime +7 -print
+
+# tar -p: preserves permission (read,write,execute) across different environments like servers/machines after transfer
+# tar --same-owner: preserves ownership (user/group)
+# sudo tar -p --same-owner --exclude="temp/,cache/" -czvf migration.tar.gz /opt/app
+
+# for corrupted compressed files, use tar -i/--ignore-zeros to skip corrupted areas/zeros/holes and try to recover working files

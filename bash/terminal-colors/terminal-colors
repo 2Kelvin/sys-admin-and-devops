@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# ----------------------------- ANSI COLORS -----------------------------
+# ansi colors with codes
+awk '{ print $0 }' ansi-colors.txt | column -t
+
+# always print colors using -e flag in echo to interpret backslashes/escape
+# color escape codes: \e or \033 or \x1b
+# m terminates the color code sequence
+# full color code: \e[<color_code>m. ==> e.g. color red is: \e[31m
+# color reset code is 0: full code ==> \e[0m
+#  always color reset if you don't want all the other terminal lines after to inherit the color you set
+
+echo -e "\n"
+# Practice examples
+# blue text
+echo -e "\e[34mBlue text\e[0m"
+
+# purple background
+echo -e "\e[45mJesus is King\e[0m"
+
+# green text on a yellow background
+# you can combine color codes in on statement using a semicolon
+echo -e "\e[32;43mYahweh\e[0m"
+
+echo -e "\n"
+
+# ----------------------------- FONT STYLES -----------------------------
+# font styles table with codes
+awk '{ print $0 }' font-styles.txt | column -t
+# used with same escape characters discussed above: \e[<value>m
+
+# Examples
+# Bold
+echo -e "\n\e[1mI am bold\e[0m"
+# light/dim/faint font
+echo -e "\e[2mI am bold\e[0m"
+# underlined
+echo -e "\e[4mI am bold\e[0m"
+# combining font styles with colors: bold cyan text on a yellow background
+echo -e "\e[1;36;43mGood and gracious King\e[0m"

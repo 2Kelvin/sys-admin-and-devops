@@ -1,0 +1,7 @@
+Effect Value
+Bold 1
+Dim/Faint 2
+Underlined 4
+Blinking(Slow) 5
+Inverted(SwapFG/BG) 7
+Hidden/Invisible 8

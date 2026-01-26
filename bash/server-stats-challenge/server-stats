@@ -1,13 +1,15 @@
 #!/bin/bash
 
-echo "--------------------------------------------"
-echo "Welcome Sys Admin! Here are the server stats"
-echo "--------------------------------------------"
-
-# Color variables
+# ANSI Color variables (for a pretty terminal)
 RED='\033[0;31m'
+YELLOW='\033[0;33m'
 GREEN='\033[0;32m'
-NC='\033[0m'
+COLOR_RESET='\033[0m'
+
+me=$(whoami)
+echo "--------------------------------------------"
+echo -e "Welcome $me! Here are your system stats"
+echo "--------------------------------------------"
 
 # +++++++++++++++++++++++++++++++++++++++++++++++ CPU USAGE +++++++++++++++++++++++++++++++++++++++++++++++
 # Reading and extract CPU usage info from "/proc/stat" file
@@ -49,7 +51,7 @@ cpu_usage_percent=$(
 	awk -v idle="$diff_idle_cpu_time" -v total="$diff_total_cpu_time" 'BEGIN {printf "%.2f", (total - idle) / total * 100}'
 )
 # echo -e "\n--- CPU Usage ---"
-echo -e "\nTotal CPU Usage: ${GREEN}$cpu_usage_percent%${NC}\n"
+echo -e "\n${YELLOW}Total CPU Usage: ${GREEN}$cpu_usage_percent%${COLOR_RESET}\n"
 
 # +++++++++++++++++++++++++++++++++++++++++++++++ MEMORY USAGE +++++++++++++++++++++++++++++++++++++++++++++++
 awk '
@@ -122,3 +124,6 @@ ps -eo pcpu,pid,comm --sort=-pcpu | head -n 6 | column -t
 # fetching the 5 linux processes with the highest CPU usage
 echo -e "\n--- Top 5 High Memory Usage Processes ---\n"
 ps -eo pmem,pid,comm --sort=-pmem | head -n 6 | column -t
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# i want to learn ANSI escape codes; all color codes to be specific from scratch in linux terminal using bash

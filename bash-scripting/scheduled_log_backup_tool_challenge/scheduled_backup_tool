@@ -51,7 +51,7 @@ backup_logs_tool() {
     local archive_log_file="$backup_folder/archive_logs_history.log"
 
     # compressing logs
-    echo "📦 Compresing $user_log_folder..."
+    echo "📦 Compresing $user_log_folder, please wait..."
     # -C means change directory
     # dirname: takes first part of path and cd into it (it finds the last slash (/) & deletes everything from that slash to the end of the string) ...
     # e.g. /var/log in dirname becomes var => tar cd(change directory) into /var
@@ -88,7 +88,6 @@ backup_logs_tool() {
 backup_logs_tool "$1"
 
 # TODO
-# fix cp and read access denied in /var/log and any other root files
 # set schedule for backup
 # set delete schedule of older logs
 # send notification

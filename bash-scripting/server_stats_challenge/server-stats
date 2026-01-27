@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # ANSI Color variables (for a pretty terminal)
-RED="\e[0;31m"
 yellow="\e[0;33m"
 green="\e[0;32m"
 bold="\e[1m"

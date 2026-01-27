@@ -40,7 +40,7 @@ This takes the disk info, filters for physical drives only, and then sends that 
 ### 1. Git clone this repo
 Open your terminal and create a new file using **Vim**:
 ```bash
-git clone [server_stats](https://github.com/2Kelvin/sys-admin-and-devops.git)
+git clone https://github.com/2Kelvin/sys-admin-and-devops.git
 ```
 
 ### 2. Run the Script

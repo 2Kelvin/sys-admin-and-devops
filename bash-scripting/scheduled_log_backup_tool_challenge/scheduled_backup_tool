@@ -2,38 +2,88 @@
 
 # cli tool to compress logs with file stamps; just pass it the pth to the logs
 backup_logs_tool() {
-    # checking if an argument has been passed in the terminal; if no arg passed fail otherwise run script
-    # -z flag checks if the length of the first argument ($1) is zero
-    if [[ -z "$1" ]]; then
-        echo -e "\n🚨 \e[31mKindly provide an argument (path to logs) while running this program!" 
+    # log folder argument; removing trailing slash (if there) for tar command's dirname and basename functionality below
+    # the % symbol is actually responsible of removing the trailing / (${%} removes characters at the end of a string)
+    local user_log_folder="${1%/}"
+
+    # checking if an argument has been passed in the terminal; if no arg passed fail otherwise continue with script
+    # -z flag checks if the length of the folder argument passed in ($1) is zero
+    if [[ -z "$user_log_folder" ]]; then
+        echo -e "\n🚨 \e[31mKindly provide a logs folder while running this program!" 
         return 1
+    fi
+
+    # checking if directory given exists
+    if [[ ! -d "$user_log_folder" ]]; then
+        echo -e "\n🚨 \e[31mThe directory you passed in doesn't exist here. Kindly check your path!"
+        return 1
+    fi
+
+    # if directory given is permission protected, check if user has read & write permission on said directory
+    # then look inside dir using find, then fetch all unreadable files through grep
+    # -q flag on grep silences it (no output). The '.' means any (did you find any unreadable files)...
+    # ... -maxdepth only searches only top level files for permission in dir to save time (instead of searching all the nested subfolders)
+    # so what this line is saying is; if i can't read or execute given folder runscript using sudo ...
+    # ... if i can read and write in given folder check its contents, if i can't read any file run script using sudo
+    if [[ ! -r "$user_log_folder" || ! -x "$user_log_folder" ]] || find "$user_log_folder" -maxdepth 1 ! -readable | grep -q .; then
+        echo -e "\n🔐 \e[33mPermission required to read $user_log_folder.\nRerunning script with sudo ...\e[0m]"
+        # rerunning script with sudo and with the same arguments as before
+        # "$0" = script's name, "$@" = all arguments passed in before
+        exec sudo "$0" "$@"
+        return 1
+    fi
+
+    # fetching timestamp
+    local timestamp=$(date +%Y%m%d_%H%M%S)
+    # and naming compressed file with timestamp
+    local filename="log_archive_$timestamp.tar.gz"
+    # if log directory commanded to use sudo: $SUDO_USER will be used to grab user name
+    # otherwise, if directory did not invoke use of sudo, use regular user name always stored in $USER env variable
+    # :- symbol adds a default value to fall back on 
+    local actual_user=${SUDO_USER:-$USER}
+    # fetching home directory, the smart way
+    IFS=":" read -r _ _ _ _ _ my_home _ < <(getent passwd "$actual_user")
+    # creating destination folder for backup in user's home directory
+    local backup_folder="$my_home/logs_backup"
+    # mkdir -p makes sure if the file exists nothing happens (no modification to existsing folder) and no errors are shown
+    mkdir -p "$backup_folder"
+    # creating an archive log file to track compressed files with their timestamps
+    local archive_log_file="$backup_folder/archive_logs_history.log"
+
+    # compressing logs
+    echo "📦 Compresing $user_log_folder..."
+    # -C means change directory
+    # dirname: takes first part of path and cd into it (it finds the last slash (/) & deletes everything from that slash to the end of the string) ...
+    # e.g. /var/log in dirname becomes var => tar cd(change directory) into /var
+    # basename: tells tar to zip this directory which it derives by finding the last slash (/) & deleting everything from the beginning of the string up to that slash
+    # e.g. /var/log in basenname becomes log => tar compress log folder only not /var/log
+    # pass the same dir to both dirname and basename and they will handle the splitting automatically
+    # sending any tar error to be logged in /tmp/errs file
+    tar -czf "$backup_folder/$filename" -C "$(dirname "$user_log_folder")" "$(basename "$user_log_folder")" 2>/tmp/tar_errs
+    # saving current tar exit code after compression
+    tar_exit_code=$?
+
+    # error checking
+    if [[ $tar_exit_code -eq 0 ]]; then
+        # if sudo was used; give user permission to backup_folder and all its archives and log file
+        chown -R "$actual_user:$actual_user" "$backup_folder"
+        # creating the archive logs file
+        touch "$archive_log_file"
+        chown "$actual_user:$actual_user" "$archive_log_file"
+
+        read -r file_size _ < <(du -h "$backup_folder/$filename")
+        
+        echo "✅ Compression complete. Backup successful"
+        echo -e "📂 Location: \e[34m$backup_folder/$filename\e[0m (\e[32m$file_size\e[0m)"
+        # updating archive log file of the new compression process
+        echo "✅ Sucess: [$timestamp]: $user_log_folder compressed" >> "$archive_log_file"
     else
-        # checking if arg passed uses absolute path (recommended for script to work properly)
-        if [[ "$1" == /* ]]; then
-            # make a folder and copy all logs to one folder to avoid tarbomb
-            # $1: log folder argument passed in terminal; *: all log files in the folder; cp -r: to recursively copy folders too
-            mkdir backup_logs
-            cp -r "$1"/* backup_logs
-
-            # fetching timestamp & naming compressed file with timestamp
-            local filename="log_archive_$(date +%Y%m%d_%H%M%S).tar.gz"
-            # compressing logs and storing them in home folder
-            tar -czf ~/"$filename" backup_logs
-
-            # error checking
-            if [[ $? -eq 0 ]]; then
-                echo "✅ Backup successful"
-                # deleting backup_logs
-                rm -r backup_logs
-            else
-                echo "❌ Backup failed with exit code $?"
-                # deleting backup_logs
-                rm -r backup_logs
-            fi
-        else
-            echo -e "\n🚨 \e[31mKindly use an absolute path to your logs folder!"
-            return 1
-        fi
+        # display tar errors saved in /tmp/ above
+        cat /tmp/tar_errs
+        # remove pre-created empty tar files in compression errors
+        rm -f "$backup_folder/$filename"
+        echo "❌ Backup failed with exit code $tar_exit_code"
+        return 1
     fi
 }
 
@@ -43,3 +93,4 @@ backup_logs_tool "$1"
 # fix cp and read access denied in /var/log and any other root files
 # set schedule for backup
 # set delete schedule of older logs
+# send notification

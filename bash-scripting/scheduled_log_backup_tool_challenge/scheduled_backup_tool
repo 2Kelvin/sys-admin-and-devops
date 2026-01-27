@@ -59,7 +59,7 @@ backup_logs_tool() {
     # e.g. /var/log in basenname becomes log => tar compress log folder only not /var/log
     # pass the same dir to both dirname and basename and they will handle the splitting automatically
     # sending any tar error to be logged in /tmp/errs file
-    tar -czf "$backup_folder/$filename" -C "$(dirname "$user_log_folder")" "$(basename "$user_log_folder")" 2>/tmp/tar_errs
+    tar -czf "$backup_folder/$filename" -C "$(dirname "$user_log_folder")" "$(basename "$user_log_folder")"
     # saving current tar exit code after compression
     tar_exit_code=$?
 
@@ -78,8 +78,6 @@ backup_logs_tool() {
         # updating archive log file of the new compression process
         echo "✅ Sucess: [$timestamp]: $user_log_folder compressed" >> "$archive_log_file"
     else
-        # display tar errors saved in /tmp/ above
-        cat /tmp/tar_errs
         # remove pre-created empty tar files in compression errors
         rm -f "$backup_folder/$filename"
         echo "❌ Backup failed with exit code $tar_exit_code"

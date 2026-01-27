@@ -37,53 +37,28 @@ This takes the disk info, filters for physical drives only, and then sends that 
 
 ## 💻 How to Use
 
-### 1. Create the file
+### 1. Git clone this repo
 Open your terminal and create a new file using **Vim**:
 ```bash
-vim server-stats
+git clone [server_stats](https://github.com/2Kelvin/sys-admin-and-devops.git)
+```
 
-### 2. Paste the Code
-To add your script to the file, follow these steps using the **Vim** editor:
-* Press `i` to enter **Insert Mode** (you will see `-- INSERT --` at the bottom).
-* **Paste** your script code into the terminal.
-* Press `Esc` to exit Insert Mode.
-* Type `:wq` (which stands for **write** and **quit**) and hit `Enter` to save and exit.
-
-### 3. Make it Executable
-In Linux, scripts need specific permissions to run. Use the `chmod` (change mode) command to make your script executable:
-
+### 2. Run the Script
+Navigate inside the `server_stats_challenge` folder.
 ```bash
-chmod +x server-stats
+cd server_stats_challenge
+```
 
-### 4. Run the Script
+### 3. Run the Script
 Execute it directly from your terminal:
 
 ```bash
-./server-stats.sh
+./server-stats
+```
 
-Welcome user! Here are your system stats
+## 📋 Example Output
 
-Total CPU Usage: 12.45%
-
---- Memory Usage ---
-
-Memory Used: 2.40 GB (30%)
-Available Memory: 5.60 GB (70%)
-
---- Disk Usage ---
-
-Total space: 100.00GB
-Used space: 45.50GB (45.5%)
-Free space: 54.50GB (54.5%)
-
---- Top 5 High CPU Usage Processes ---
-
-%CPU  COMMAND         PID
-5.0   chrome          1234
-2.1   code            5678
-1.8   systemd         1
-0.9   vim             8821
-0.5   network-manager 432
+Insert screenshot here
 
 ---
 

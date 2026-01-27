@@ -8,9 +8,7 @@ bold="\e[1m"
 color_reset="\e[0m"
 
 me=$(whoami)
-echo "--------------------------------------------"
-echo -e "Welcome $me! Here are your system stats"
-echo "--------------------------------------------"
+echo -e "\n\e[1;43mWelcome $me! Here are your system stats${color_reset}"
 
 # +++++++++++++++++++++++++++++++++++++++++++++++ CPU USAGE +++++++++++++++++++++++++++++++++++++++++++++++
 # Reading and extract CPU usage info from "/proc/stat" file
@@ -70,7 +68,7 @@ awk '
 		}
 	}
 
-	# BEGIN { print "\n--- Memory Usage ---\n" }
+	BEGIN { print "\n\033[1;33m--- Memory Usage ---\033[0m\n" }
 	
 	# grabbing total and available memory from file
 	$1 == "MemTotal:" { total_mem=$2 }
@@ -79,12 +77,10 @@ awk '
 		# calculating used memory
 		memory_used = total_mem - avilable_mem
 		# printing out the data fetched
-		printf "Memory Used: %s (%d%%)\nAvailable Memory: %s (%d%%)\n",
+		printf "Memory Used: \033[32m%s (%d%%)\033[0m\nAvailable Memory: \033[32m%s (%d%%)\033[0m\n",
 		 convert_mem(memory_used), (memory_used/total_mem)*100, convert_mem(avilable_mem), (avilable_mem/total_mem)*100
 	}
 ' /proc/meminfo
-
-echo -e "\n"
 
 # +++++++++++++++++++++++++++++++++++++++++++++++ DISK USAGE +++++++++++++++++++++++++++++++++++++++++++++++
 # df categories: $1: filesystem, $2: 1K-blocks, $3: Used, $4: Available, $5: Use Percentage and $6: Mounted on
@@ -92,7 +88,7 @@ echo -e "\n"
 # -k deliveres space in KBs
 # grep '^/dev/': ^ means start of a line. so look for filesystems with the name dev at the start and not anywhere else
 df -k | grep '^/dev/' | awk '
-# BEGIN { print "\n--- Disk Usage ---\n" }
+BEGIN { print "\n\033[1;33m--- Disk Usage ---\033[0m\n" }
 {
 	total_space += $2;
 	used_space += $3;
@@ -108,7 +104,7 @@ END {
 	used_space_pct = (used_space / total_space) * 100
 	free_space_pct = (free_space / total_space) * 100
 
-	printf "Total space: %.2fGB\nUsed space: %.2fGB (%.1f%%)\nFree space: %.2fGB (%.1f%%)\n",
+	printf "Total space: \033[32m%.2fGB\033[0m\nUsed space: \033[32m%.2fGB (%.1f%%)\033[0m\nFree space: \033[32m%.2fGB (%.1f%%)\033[0m\n",
 	 total_space_gb, used_space_gb, used_space_pct, free_space_gb, free_space_pct
 }
 '
@@ -118,10 +114,10 @@ END {
 # ps flags => -e: displays all processes; -o: let's you customize fields you want ps to fetch by ...
 # ... like pcpu(cpu percentage), pid (process id), comm (command/process name)...
 # ... --sort is for sorting the data ps fetched. --sort=-pcpu: sort cpu percentage by descending order (the '-' means descending order)
-echo -e "\n--- Top 5 High CPU Usage Processes ---\n"
-ps -eo pcpu,pid,comm --sort=-pcpu | head -n 6 | column -t
+echo -e "\n${yellow}${bold}--- Top 5 High CPU Usage Processes ---\n${green}"
+ps -eo pcpu,comm,pid --sort=-pcpu | head -n 6 | column -t
 
 # +++++++++++++++++++++++++++++++++++++++++++++++ Top 5 High Memory Usage Processes +++++++++++++++++++++++++++++++++++++++++++++++
 # fetching the 5 linux processes with the highest CPU usage
-echo -e "\n--- Top 5 High Memory Usage Processes ---\n"
-ps -eo pmem,pid,comm --sort=-pmem | head -n 6 | column -t
+echo -e "\n${yellow}${bold}--- Top 5 High Memory Usage Processes ---\n${green}"
+ps -eo pmem,comm,pid --sort=-pmem | head -n 6 | column -t

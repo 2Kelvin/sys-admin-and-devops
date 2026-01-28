@@ -70,4 +70,7 @@ awk '{ print $0 }' syntax.txt | column -t
 
 # store system-wide scripts in /usr/local/bin/ or /opt/scripts/ not in /home/user for security (hacked user) & administrative purposes (unmounted/unlogged in user)
 
-0 4 * * 7 root //usr/local/bin/cleanup.sh > /var/log/cleanup.log 2>&1
+# if a task is scheduled at a particular time and the pc is shutdown before the time, cron doesn't catch up with said event when pc is turned on after scheduled time passed, it skips it
+# anacron unlike cron is used for pcs that are shutdown often, on pc start up it checks which task schedules were missed and run them on start up
+# anacron syntax: period, delay, job id, command
+# anacron runs on intervals of days and not less than that; can't do hours or minutes

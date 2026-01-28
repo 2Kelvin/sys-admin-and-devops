@@ -1,0 +1,6 @@
+Field Meaning Allowed_values
+1 Minute 0-59
+2 Hour 0-23(24hr)
+3 Day_of_Month 1-31
+4 Month 1-12(orJAN-DEC)
+5 Day_of_Week 0-7(0/7=Sunday,orSUN-SAT)

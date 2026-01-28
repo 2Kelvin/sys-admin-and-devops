@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# cron jobs allow you to automatically schedule scripts in linux to run at paticular times
+# used for tasks like backups, system cleaning tmp files, sending automated reports
+# crond is the background system service that runs crontabs/cron tables (cron's conf files)
+
+# crontab's syntax: => * * * * * /path/to/command
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * command 
+awk '{ print $0 }' syntax.txt | column -t
+
+# special characters
+# * (Asterisk): "Every" (e.g., every minute, every day).
+# , (Comma): A list of values (e.g., 1,15,30 in the minute field runs at those specific minutes).
+# - (Hyphen): A range (e.g., 1-5 in the day of week field runs Monday through Friday).
+# / (Slash): Steps or intervals (e.g., */15 in the minute field runs every 15 minutes).
+
+# examples
+# 30 08 * * 1 /usr/bin/backup.sh => run /usr/bin/backup.sh every monday 8:30am
+
+# creating & managing crontabs
+# crontab -e => Edit your crontab file.
+# crontab -l => List your current cron jobs.
+# crontab -r => Remove ALL your cron jobs.
+# crontab -i => Interactive prompt before deleting with -r.
+
+# unlike like linux sh(bash/zsh) which have a wide range of env variables, cron's tracked variables and paths are very minimal ...
+# ... always use absolute paths for all commands in scripts run by cronjobs
+
+# System-wide vs. User Cron 📂
+# Recommended: use /etc/cron.d folder for System-wide crontabs, it's more managable than /etc/crontab
+# each file in /etc/cron.d has its own system wide cron syntax configuration..if one breaks it doesn't affect other system wide jobs likeit would have in /etc/crontab file
+# System-wide crontabs are located in /etc/crontab file... edit id using vim/nano to add cron jobs ...
+# System-wide cron jobs involve maintenance tasks of the whole system
+# System-wide cron syntax is like the user cron one but with an added 'user_name' field between time and command ...
+# ... this could be root or the user's user_name
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name command to be executed
+# System-wide cron job example: * * * * * root /scripts/sys_check.py
+# in /etc/ there are cron directories (cron.daily, cron.weekly, cron.monthly) that you can add your cron scripts in for them to run
+# cron directories are system-wide cron jobs that you can drop your scripts in depending on how regularly you want them to run ...
+# ... however, they don't let you specify the exact time the script should run like system-wide cron jobs do, the system decides when to run cron directories
+# info on when cron directories are run is included in /etc/anacrontab file
+# just like system wide cronjobs cron directories also run as root
+# System-wide vs cron directories ==> System-wide is for more precision
+
+# user cron tabs are located in /var/spool/cron/crontabs/
+
+# To avoid always typing commands with full paths all the time in cron job scripts, define PATH at the top of the script; you can now use commands normally
+# PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# to log cron jobs outputs use redirection '>' (overwrite file) '>>' (append to file)
+# example: only logging to standard output (1)
+# 0 0 * * 7 root /usr/local/bin/sync-script.sh > /var/log/sync.log
+# example: logging standard output (1) & errors (2)
+# 0 0 * * 7 root /usr/local/bin/sync-script.sh > /var/log/sync.log 2>&1
+
+# to check all cron logs and activities: open '/var/log/syslog (on Debian/Ubuntu) or /var/log/cron (on RHEL/CentOS)' or run command 'journalctl -u cron'
+
+# store system-wide scripts in /usr/local/bin/ or /opt/scripts/ not in /home/user for security (hacked user) & administrative purposes (unmounted/unlogged in user)
+
+0 4 * * 7 root //usr/local/bin/cleanup.sh > /var/log/cleanup.log 2>&1

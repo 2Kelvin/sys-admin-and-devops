@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# anatomy of a systemmd timer: .service (what to do/script to run) & .timer (when to do it)
+# place both service and timer files in: /etc/systemd/system/
+# .service file format
+# [Unit]
+# Description=My Daily Backup Script
+# [Service]
+# ExecStart=/usr/bin/bash /home/user/scripts/backup.sh
+
+# .timer file format
+# [Unit]
+# Description=Runs the backup script daily
+# [Timer]
+# OnCalendar=daily
+# Unit=myscript.service
+# [Install]
+# WantedBy=timers.target
+
+# onCalender syntax: DayOfWeek Year-Month-Day Hour:Minute:Second
+# onCalender syntax example: OnCalendar=Fri *-*-* 17:00:00
+
+# Triggers => real-time (onCalendar) or monotonic (event driven)
+# real-time timers -> like cronjobs trigger at specified times e.g. every Monday at 2am
+# monotonic timers -> run when triggered by an event e.g. pc boot up, time after service finished running
+# monotonic timers keys: OnBootSec=(time after pc boot), OnUnitActiveSec=(time after service was last activated), OnUnitInactiveSec=(time after service last finished)
+
+# using 'Persistent=true' if a task was missed due to pc shutdown, systemmd reruns that task on boot up ...
+# ... making systemmd timers persistent unlike cron which needs anacron to do this
+
+# how to set timers
+# Reload 🔄: systemctl daemon-reload (tells systemd to look for your new files).
+
+# Start ▶️:	systemctl start myscript.timer (starts the timer)
+# Enable 🛠️: systemctl enable --now myscript.timer (starts the timer NOW without waiting to reboot to make timer start & ensures it survives all pc reboots from then on).
+
+# Logs 📜:	journalctl -u myscript.service
+# Check 🔍: systemctl list-timers (shows you exactly when every timer on your system is scheduled to run next).
+
+
+# Summary
+# systemd timer workflow:
+#     - Create your .service file
+#     - Create your .timer file
+#     - Reload the manager: systemctl daemon-reload.
+#     - Start/Enable the timer: systemctl enable --now my.timer.
+#     - Verify: systemctl list-timers.
+
+# for system wide scripts running automatically using system-timers without requesting a password (running as root) add 'User=root' to .service file
+
+learn systemmd .service and .timer files attributes

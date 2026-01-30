@@ -48,4 +48,6 @@
 
 # for system wide scripts running automatically using system-timers without requesting a password (running as root) add 'User=root' to .service file
 
-learn systemmd .service and .timer files attributes
+# systemmd-timers still has a minimal path env just like cron, to fix this and command not found in your scripts...
+# in .service file assign the environment key the value of the full path e.g.
+# Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"

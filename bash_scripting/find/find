@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# syntax -> find [path] [expression]
+# find is recurssive; it starts searching from given  directory downwards into each subfolders
+# e.g. find . -name "docker.yaml" ==> find from this dir a file named docker.yaml
+# wrap wildcards in double quotes in bash to avoid errors
+# e.g. find . -name "*.csv" ==> find all csv files in this folder
+# filter by type: -type f (files) || -type d (folders)
+
+# example: looking for all folders with backup anywhere in their name in current folder
+find . -type d -name "*backup*"
+
+# filter by size: (-size)
+# b: blocks (default) | k: kbs | M: mbs | G: gbs
+# +: larger than | -: smaller than | search exact size
+# example: finding in /var/log files larger than 10mb
+sudo find /var/log -size +10M
+
+# filter by time: (-mtime (days) | -mmin (mins))
+# searches files based on when they were last modified/changed
+# - : less than/younger than, + : more than/older than or you can search without +/- for exact time
+# example: searching /var/log for file larger than 1gb modified in the last 2 days
+find /var/log -type f -size +1G -mtime -2
+
+# executing in actions in find: (-exec)
+# -exec allows find to execute a command for every file/dir it finds
+# syntax: find [path] [expression] -exec [command] {} \;
+# {}: placeholder for file/dir find found earlier | \: shell escape character for ; | ; end of command (\; tells find where command ends)
+# examples
+# making all "*.sh" files executable
+find . -type f -name "*.sh" -exec chmod +x {} \;
+# removing all tmp files
+find . -type f -name "*.tmp" -exec rm {} \;
+# moving files: /+ at the end there is faster & more efficient: it passes  multiple files at once unlike \; which would run the command separately for each file
+find . -name "*.pdf" -exec mv {} /home/username/documents \+
+
+# Example: finding logs older than 30 days & moving them to archive dir
+find . -type f -name "*.log" -mtime +30 -exec mv {} /archive/ \+ 
+
+# Example: cleaning up tmp and bak files in /var/www/html larger than 100mb that have not been modified in the last 60 days
+# -o: OR
+# group expression \( \)
+find /var/www/html -type f \( -name "*.tmp" -o -name "*.bak" \) -size +100M -mtime +60 -exec rm {} \;
+
+# saving file names to a file
+# saving names of all python files in this folder to python_scripts.txt
+find . -type f -name "*.py" > python_scripts.txt
+
+# combining find with grep
+# when using grep in -exec of find always use 'grep -l': it lists filenames instead of all files contents containing search keyword
+# finding all python files in this dir, modified in the last 7 days that have the statement "import requests" in them
+find . -type f -name "*.py" -mtime -7 -exec grep -l "import requests" {} \;
+
+# always do a dry run before without -exec before running find with -exec; confirm first if the files are the actual thing you want to rm or mv etc
+# to find a file irrespective of the case, use (-iname) flag instead of (-name)
+# -ok is an alternative for -exec that asks user for yes/no to e.g. delete files find found

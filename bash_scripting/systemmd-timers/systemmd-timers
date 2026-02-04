@@ -30,8 +30,8 @@
 
 # how to set timers
 # Reload 🔄: systemctl daemon-reload (tells systemd to look for your new files).
-# Start ▶️:	systemctl start myscript.timer (starts the timer)
 # Enable 🛠️: systemctl enable --now myscript.timer (starts the timer NOW without waiting to reboot to make timer start & ensures it survives all pc reboots from then on).
+
 # Logs 📜:	journalctl -u myscript.service
 # Check 🔍: systemctl list-timers (shows you exactly when every timer on your system is scheduled to run next).
 

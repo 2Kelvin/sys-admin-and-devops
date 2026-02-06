@@ -2,6 +2,21 @@
 
 # all arrays in awk are associate arrays
 
+# Assigning a value
+arr["key"] = "value"
+
+# Accessing a value
+print arr["key"]
+
+# deleting one item
+delete arr["key"]
+
+# deleting the whole array
+delete arr
+
+# if an item doesn't exist in an array and you try to look for it like so: arr["key"], you end up creating a new item in arr with that key
+# do the above effectively using the for in loop
+
 # counting and frequency --> count_array[$1]++
 # $1: item in line's first column (first string in line) count: is an array storing & counting number of $1 occurrences ...
 # ... and ++ increases that tally per occurrence that it finds $1 to give the total count it appears in file

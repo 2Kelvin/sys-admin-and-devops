@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# all arrays in awk are associate arrays
+
+# counting and frequency --> count_array[$1]++
+# $1: item in line's first column (first string in line) count: is an array storing & counting number of $1 occurrences ...
+# ... and ++ increases that tally per occurrence that it finds $1 to give the total count it appears in file
+# count variable looks e.g. [name: 34, hunt: 4, error: 45, warning: 2]...each key in array is word searched and its value is total count in file
+# syntax: arr[<search_column>]++ -> this counts and stores each searched word in arr and assigns a total count to them
+
+# example
+awk '
+{all_fruits_array[$1]++}
+END {for (fruit in all_fruits_array) {print fruit ": " all_fruits_array[fruit]}}
+' fruit_sales.txt

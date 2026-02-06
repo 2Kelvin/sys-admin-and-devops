@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# creating an array
+names=("June" "Oli" "Pops")
+
+# adding an item
+names[3]="Inoa"
+
+# accessing values => always use "${}" --> always wrap in double quotes: prevent errs for values with spaces
+echo "${names[3]}"
+# all values => [@]
+echo "${names[@]}"
+
+# total array count => #
+echo "Total array count: ${#names[@]}"
+
+# array slicing --> ${array[@]:start:length}
+ip_addresses=("102.68.79.65" "63.127.82.96" "172.30.248.34" "71.63.85.148" "237.245.60.165" "12.30.248.34")
+# grabbing ip addresses 1 to 5 only
+# start from index 0 and give 5 addresses from ip address at index 0
+echo "${ip_addresses[@]:0:5}"
+# grab from index 4 to the end of the array
+echo "${ip_addresses[@]:4}"
+# creating new array from the last 4 ips in ip_addresses array
+# Note: you must wrap the assignment in () to get an array, otherwise you'll get one string assigned
+last_four_ips=(${ip_addresses[@]:2})
+echo "Last ${#last_four_ips[@]} ip addresses: ${last_four_ips[@]}"
+
+# example project
+# adding prefixes to file names saved in an array
+files=("data.csv" "logs.txt" "config.json")
+# adding/appending a new file to array
+files+=("notes.txt")
+
+for each_file_name in "${files[@]}"; do
+    echo "$each_file_name"
+done

@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# associative array => dictionaries/maps => key:value
+# you must declare an associative array before creating it
+declare -A f1_driver
+f1_driver=( ["name"]="Lando" ["team"]="Mclaren" ["position"]=1 )
+
+# adding value
+f1_driver["country"]="UK"
+# appending a value
+f1_driver+=(["active"]="yes")
+# updating value
+f1_driver["name"]="Lando Norris"
+
+# total count/array length
+echo "Associative f1_driver array length is ${#f1_driver[@]}"
+
+# accessing values => always use "${}" --> always wrap in double quotes: prevent errs for values with spaces
+# accessing values => ${assoc_arr["key"]}
+# accessing a value
+echo "The driver's name is: ${f1_driver["name"]}"
+# all values
+echo "All keys: ${f1_driver[@]}"
+# all keys => !
+echo "All values: ${!f1_driver[@]}"
+# keys and values
+echo -e "\n--- Driver Profile ---"
+# Loop through the keys
+for key in "${!f1_driver[@]}"; do
+    # Use the key to fetch the corresponding value
+    echo "${key}: ${f1_driver[$key]}"
+done
+
+# removing a key and its value
+unset f1_driver["country"]
+# removing the whole associative array
+unset f1_driver
+
+# project example
+declare -A services
+services+=(["httpd"]="running")
+services+=(["mysql"]="stoppped")
+
+echo ""
+for key in "${!services[@]}"; do
+    echo "${key}: ${services[$key]}"
+done

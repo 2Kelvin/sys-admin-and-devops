@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# printing each item
+for each_item in cup spoon table
+do
+    echo "Current item is: $each_item"
+done
+
+# creating folders
+for each_item in images scripts docs
+do
+    mkdir -p $each_item
+done
+# cleanup
+rm -r {images,docs,scripts}
+
+# iterating thro range numbers
+for n in {1..5}
+do
+    mkdir -p "backup_$n.txt"
+done
+rm -r backup*
+
+# using continue to skip item and continue with others in loop
+for n in {1..5}
+do
+    if [[ $n -eq 3 ]]; then
+        continue
+    fi
+    echo "Number: $n"
+done
+
+# command substitution
+for person in $(users)
+do
+    echo -e "Hello, \e[1;36m$person\e[0m. Keep going!."
+done
+
+# files
+for log_file in $(find . -name "*.log")
+do
+    # do something with the file here
+    echo "This is file: $log_file"
+done

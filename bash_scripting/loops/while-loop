@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# while loop runs as long as a condition is true
+
+# conditional
+counter=1
+while [[ $counter -le 3 ]]
+do
+    echo "Attempt $counter: Checking for updates..."
+    ((counter++))
+done
+
+i=2
+# using break to exit loop
+while [[ $i -le 10 ]]
+do
+    if [[ $i -eq 8 ]]; then
+        break
+    fi
+    echo "Count is $i"
+    ((i++))
+done
+
+# reading file in loop
+while read -r each_server
+do
+    ping -c 1 each_server
+done < servers.txt
+
+# reading from a file with folder names and creating 3 subfolders in each
+while read -r folder
+do
+    mkdir -p "$folder"
+    for subfolder in data scripts logs
+    do
+        mkdir -p "$folder/$subfolder"
+    done
+done < projects.txt

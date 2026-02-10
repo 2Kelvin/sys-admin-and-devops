@@ -1,0 +1,15 @@
+# Workflow file => YAML (.yaml/.yml) file containing the automation code
+# Inside workflow file are 4 components: event, runner, job and step
+# Event (Trigger): activity that starts/triggers the github actions workflow e.g. pushing code to repo "[on:]"
+# Runner (Computer): Virtual server (github's or yours) that executes your instructions "[runs_on:]"
+# Job (Mission): Group of steps running on the same runner/virtal computer
+# Step (Task): Individual commands e.g. installing mysql
+
+# The Workflow is the whole container...
+# ... It contains one or more Jobs (which can run at the same time)...
+# ... Each Job contains multiple Steps (which run one after another)
+
+# place your github actions workflow in ".github/workflows" directory in your project/repo
+# assign a value to "on" attribute to triggers events e.g. on: push
+
+# each workflow must have atleast one job

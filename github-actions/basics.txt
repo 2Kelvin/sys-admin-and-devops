@@ -5,6 +5,8 @@
 # Job (Mission): Group of steps running on the same runner/virtal computer
 # Step (Task): Individual commands e.g. installing mysql
 
+#  an event triggers the workflow, which contains a job. This job then uses steps to dictate which actions will run within the workflow
+
 # The Workflow is the whole container...
 # ... It contains one or more Jobs (which can run at the same time)...
 # ... Each Job contains multiple Steps (which run one after another)
@@ -13,3 +15,4 @@
 # assign a value to "on" attribute to triggers events e.g. on: push
 
 # each workflow must have atleast one job
+# a schedule with a cronjob syntax can be set to trigger a workflow

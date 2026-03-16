@@ -1,0 +1,14 @@
+name: My first GitHub Actions
+on: push
+jobs:
+    first_job:
+        runs-on: ubuntu-24.04
+        steps:
+            - name: Hello message in Ubuntu VM
+              run: echo "Hello Github Actions"
+
+            - name: List all files in this project
+              run: ls -la
+
+            - name: Read the README.md file
+              run: cat README.md

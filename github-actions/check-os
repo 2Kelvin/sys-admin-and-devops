@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo -e "\e[34mHere is your system's information\e[0m"
+cat /etc/os-release
+echo "IP Address: $(hostname -I)"
+echo -e "\e[34mUser: $(whoami)\e[0m"

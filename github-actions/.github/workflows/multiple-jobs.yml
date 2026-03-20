@@ -1,0 +1,29 @@
+name: Running multiple jobs
+on: push
+jobs:
+  system_info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloning repo into runner
+        uses: actions/checkout@v6.0.2
+
+      - name: Running system information script
+        run: ./check-os
+
+  python_install:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Cloning repo into runner
+        uses: actions/checkout@v6.0.2
+
+      - name: Installing python3 and pip3
+        run: ./install-python-and-pip
+
+  nodejs_install:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Cloning repo into runner
+        uses: actions/checkout@v6.0.2
+
+      - name: Installing NodeJS and npm
+        run: ./install-nodejs-and-npm

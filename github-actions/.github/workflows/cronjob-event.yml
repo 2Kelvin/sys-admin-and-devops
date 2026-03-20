@@ -1,0 +1,14 @@
+name: Cron Job workflow running every 5 minutes
+on:
+    schedule:
+      - cron: "*/5 * * * *" 
+    workflow_dispatch: # creates a workflow dispatch button in the UI
+jobs:
+  cronjob:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Appending content to a test file
+        run: echo "This was added 5mins ago" >> myFile.txt
+
+      - name: Reading test file
+        run: cat myFile.txt

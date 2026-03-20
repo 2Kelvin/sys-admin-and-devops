@@ -1,0 +1,14 @@
+name: Fetch runner's system information
+on: push
+jobs:
+  system_info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloning repo to runner
+        uses: actions/checkout@v6.0.2
+        
+      - name: Listing all files in this repo
+        run: ls -al
+
+      - name: Executing bash script
+        run: ./check-os

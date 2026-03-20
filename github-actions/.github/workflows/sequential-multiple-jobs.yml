@@ -1,0 +1,24 @@
+name: Running multiple jobs in sequence
+on: push
+jobs:
+  show_runner_user:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Output runner user name
+        run: echo "The ubuntu runner user is $USER"
+
+  get_runner_ip:
+    needs: show_runner_user # only runs after show_runner_user job ran successfully to completion 
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Display runner IP Address(es)
+        run: echo "The runner's IP Address(es) is $(hostname -I)"
+
+  show_runner_system_info:
+    needs: get_runner_ip # only runs after get_runner_ip job ran successfully to completion
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetching runner information
+        run: |
+          echo "Runner system information"
+          cat /etc/os-release

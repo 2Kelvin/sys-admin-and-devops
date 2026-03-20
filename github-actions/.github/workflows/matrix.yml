@@ -1,0 +1,18 @@
+name: Testing docker on different OS
+on: push
+jobs:
+  docker_os_test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-22.04, windows-latest]
+        docker_images: [hello-world, alpine]
+        exclude: # excluding alpine docker image from running on windows
+          - docker_images: alpine
+            os: windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check docker details
+        run: docker info
+
+      - name: Run docker on ${{ matrix.os }}
+        run: docker run ${{ matrix.docker_images }}

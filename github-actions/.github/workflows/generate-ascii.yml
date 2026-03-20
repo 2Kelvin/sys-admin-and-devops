@@ -1,0 +1,14 @@
+name: Installing cowsay tool
+on: push
+jobs:
+  cowsay_job:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6.0.2
+
+      - name: Install cowsay in Ubuntu runner
+        run: sudo apt update && sudo apt install -y cowsay
+
+      - name: Run cowsay
+        run: cowsay "Hey CI/CD and GitHub Actions 👋"

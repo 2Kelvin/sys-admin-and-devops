@@ -1,0 +1,19 @@
+name: My first GitHub Actions
+on: push # run actions on every code commit pushed to github
+jobs:
+  first_job:
+    runs-on: ubuntu-24.04 # runner a.k.a the Ubuntu VM this github workflow runs on
+    steps:
+      - name: Checkout repo # git clones our repo into the ubuntu vm
+        uses: actions/checkout@v6.0.2
+
+      - name: Hello message in Ubuntu VM
+        run: echo "Hello Github Actions" # how to run a command in ubuntu vm terminal
+        
+      - name: Where am i?
+        run: | # run multiple commands in the ubuntu vm terminal
+          pwd
+          tree -a -I .git
+
+      - name: Read the README.md file
+        run: cat README.md # display the contents of this repo's readme

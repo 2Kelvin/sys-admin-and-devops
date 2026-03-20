@@ -1,0 +1,54 @@
+name: Upload and download files to other jobs
+on: push
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create test file
+        run: echo 'You are good you do miracles so great' > lyrics.txt
+
+      - name: Check if test file was created
+        run: |
+          ls -alh
+          cat lyrics.txt
+
+      - name: Share the test file for other jobs to use
+        uses: actions/upload-artifact@v7.0.0 # uploading file for other jobs to use
+        with:
+          name: lyrics-testfile # filename for later jobs to use for download
+          path: ./lyrics.txt # path to location of the test file
+
+  job2:
+    needs: job1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download job1's test file
+        uses: actions/download-artifact@v8.0.1 # downloading shared/uploaded file from job1
+        with:
+          name: lyrics-testfile
+
+      - name: Check for job1's test file
+        run: ls -alh lyrics.txt
+
+      - name: Add content to test file
+        run: echo 'Yale umetenda Baba yote ni makuu' >> lyrics.txt
+
+      - name: Upload updated test file
+        uses: actions/upload-artifact@v7.0.0 # reuploading updated file for job3 to use
+        with:
+          name: lyrics-updated-testfile # updated file name for later jobs to use
+          path: ./lyrics.txt
+
+  job3:
+    needs: job2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download job2's updated test file
+        uses: actions/download-artifact@v8.0.1 # downloading shared/uploaded file from job2
+        with:
+          name: lyrics-updated-testfile # updated file name to download from job2
+
+      - name: Check for test file with updated content from job2
+        run: |
+          ls -alh lyrics.txt
+          cat lyrics.txt

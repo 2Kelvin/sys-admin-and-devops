@@ -1,0 +1,15 @@
+name: Accessing and logging workflow contexts
+on: push
+jobs:
+  accessing_contexts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log all contexts
+        env:
+          ALL_CONTEXTS: ${{ toJson(github) }}
+        run: echo "$ALL_CONTEXTS"
+
+      - name: Log runner contexts
+        env:
+          RUNNER_CONTEXTS: ${{ toJson(runner) }}
+        run: echo "$RUNNER_CONTEXTS"

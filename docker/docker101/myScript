@@ -18,5 +18,13 @@ docker stop my_nginx_server # stop the nginx container from running
 docker start my_nginx_server # start the already created nginx container
 docker restart my_nginx_server # restart the nginx container (shutdown and start) -> used to update settings
 
+# note: containers must be stopped first
 docker rm my_nginx_server # delete container
 docker container prune # delete all containers
+# delete a running container
+docker rm -f my_nginx_server
+
+# efficiency: starting, stopping removing multiple containers at once
+docker start container1 container2
+docker stop container1 container2
+docker rm container1 container2

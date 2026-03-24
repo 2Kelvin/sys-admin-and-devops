@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Pulling Nginx image and running an Nginx web server container
+
+docker search nginx # searching for nginx image
+docker pull nginx # download nginx docker image
+docker image ls # check downloaded images
+
+# run nginx web server container
+# -d --> detached mode; no logs in terminal; frees your terminal
+# --name give the running container a unique name that can be invoked to manage it
+# -p: port 8010:host pc port, 80:nginx port --> pc port maps to nginx port to listen for requests
+# you can access the webserver on pc by 'accessing port 8010' on 'localhost'
+docker run -d --name my_nginx_server -p 8010:80 nginx
+docker ps # see running containers
+
+docker stop my_nginx_server # stop the nginx container from running
+docker start my_nginx_server # start the already created nginx container
+docker restart my_nginx_server # restart the nginx container (shutdown and start) -> used to update settings
+
+docker rm my_nginx_server # delete container
+docker container prune # delete all containers

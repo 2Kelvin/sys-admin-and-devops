@@ -1,0 +1,24 @@
+{
+  "name": "containerized-expressjs-api",
+  "version": "1.0.0",
+  "description": "Using Docker to containerize a simple ExpressJS API",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2Kelvin/containerized-expressjs-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/2Kelvin/containerized-expressjs-api/issues"
+  },
+  "homepage": "https://github.com/2Kelvin/containerized-expressjs-api#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
